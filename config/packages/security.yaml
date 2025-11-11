@@ -4,14 +4,23 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        in_memory:
+            memory:
+                users:
+                    admin:
+                        password: '$2y$13$/hfKUixCBEkh.GxOarK0GuGKwv14TXNmcD0FYNMwYOOaET8hFyw3u'
+                        roles: ['ROLE_ADMIN', 'ROLE_USER']
+                    user:
+                        password: '$2y$13$/hfKUixCBEkh.GxOarK0GuGKwv14TXNmcD0FYNMwYOOaET8hFyw3u'
+                        roles: ['ROLE_USER']
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            http_basic: ~
+            provider: in_memory
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -20,10 +29,10 @@ security:
             # switch_user: true
 
     # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+    # Note: Only the first access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # Protect /dashboard so only logged-in users can access it
+        - { path: ^/dashboard, roles: ROLE_USER }
 
 when@test:
     security:
